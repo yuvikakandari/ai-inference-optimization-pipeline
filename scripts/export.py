@@ -1,3 +1,4 @@
+import os
 import time
 import numpy as np
 import torch
@@ -25,7 +26,7 @@ def export_mobilenet_to_onnx(output_path="models/onnx/mobilenet_v2.onnx"):
         dummy_input, 
         output_path, 
         export_params=True,        # Store the trained weights inside the model file
-        opset_version=12,          # Use a stable, widely supported hardware operator set
+        opset_version=18,          # Use a stable, widely supported hardware operator set #have updated the code to use opset_version18
         do_constant_folding=True,  # Optimize by pre-calculating constant operations
         input_names=['input'],     # Name the input node for the deployment engine
         output_names=['output'],   # Name the output node
