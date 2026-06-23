@@ -1,0 +1,226 @@
+**Development Workflow Tools**
+
+**The professional environment you use to write, organize, and track your engineering work.**
+
+
+
+**Git \& GitHub: Version control. Learn how to stage changes (git add), lock them in (git commit), and send them to the cloud (git push).**
+
+
+
+**Command Line Interfaces (PowerShell / Bash): Navigating folders (cd), creating paths (mkdir), and executing scripts (python script.py) without using a graphical mouse interface.**
+
+
+
+**Virtual Environments (venv / conda): Isolated containment zones on your computer so your project libraries don't conflict with other software on your PC.**
+
+
+
+**. Core Python for AI Data Structures**
+
+**Before looking at neural networks, you need to understand how computers hold image data. Images are just grids of numbers.**
+
+
+
+**Multidimensional Arrays (Matrices): Understand what a 1D, 2D, 3D, and 4D array looks like.**
+
+
+
+**Why? An image is a 3D array: \[Width, Height, Color Channels (RGB)]. A batch of images is a 4D array: \[Batch Size, Width, Height, Channels].**
+
+
+
+**NumPy Basics: Learn how to create arrays, check their shapes (array.shape), and change their data types (like converting numbers to float32).**
+
+
+
+**Python Functions \& Variable Scope: Understand arguments, default values, and the if \_\_name\_\_ == "\_\_main\_\_": block.**
+
+
+
+
+
+Artificial Intelligence Fundamentals (The "What")
+
+You don't need to know the complex calculus behind training a model, but you must understand how a model behaves once it is already trained.
+
+
+
+Inference vs. Training:
+
+
+
+Training is the school phase where a model looks at images, makes mistakes, and learns (takes hours/days).
+
+
+
+Inference is the exam phase where the model uses its learned knowledge to make a split-second prediction on a new image. Your project is 100% focused on Inference.
+
+
+
+Weights and Biases: These are the "knowledge parameters" (decimal numbers) inside the AI brain. Think of them as knob adjustments that change how data flows through the network.
+
+
+
+Computer Vision Task Types: Know the difference between Image Classification (saying "this is a truck") and Object Detection (drawing a bounding box around the truck).
+
+
+
+
+
+
+
+
+
+
+
+3\. Deep Learning Frameworks (The "Toolkits")
+
+These are the industrial software suites engineers use to build and manipulate AI models.
+
+
+
+PyTorch (torch \& torchvision): Created by Meta. It's the sandbox where engineers write AI models. You should learn how to load a pre-trained model and switch it between training mode and evaluation mode (model.eval()).
+
+
+
+Model Graphs (Computational Graphs): Understand that a neural network is just a series of math nodes (addition, multiplication) connected by arrows. Data goes into node A, the output goes into node B.
+
+
+
+
+
+
+
+
+
+
+
+The Architecture: MobileNetV2
+
+Lightweight Architectures: Standard deep learning models (like ResNet or VGG) have hundreds of millions of knobs (parameters), making them too heavy for a small device. Lightweight models are intentionally designed with mathematical shortcuts to stay small.
+
+
+
+Depthwise Separable Convolutions: This is the specific secret sauce of MobileNet. Instead of checking an image's colors and shapes all at once (which takes massive computing power), MobileNet splits the math into two simpler steps:
+
+
+
+Filter the shapes layer by layer (Depthwise).
+
+
+
+Combine the colors pixel by pixel (Pointwise).
+
+
+
+The Result: It cuts down the required math operations by nearly 9 times compared to standard models, losing only a tiny fraction of accuracy.\\
+
+
+
+
+
+
+
+
+
+he Intermediate Representation: ONNX
+
+6\. ONNX Format (Creating a universal cross-platform model graph)
+
+&#x20;  └── 7. ONNX Simplifier (Cleaning up redundant math nodes in the graph)
+
+ONNX (Open Neural Network Exchange): A universal open-source format developed by Microsoft, Meta, and other tech giants.
+
+
+
+The Ecosystem Interoperability Problem: If Engineer A builds a model in PyTorch and Engineer B builds one in TensorFlow, a hardware chip doesn't want to install both massive software packages just to run them.
+
+
+
+ONNX as the Bridge: ONNX acts as a universal translator. It compiles any framework's model into a standardized abstract graph file (.onnx). Once a model is in ONNX format, almost any hardware compiler in the world can read it.
+
+
+
+
+
+
+
+
+
+
+
+Edge-AI \& Embedded Hardware Concepts
+
+Edge-AI: Processing data right where it is collected (on a drone, a camera, or a vehicle) instead of sending it over the internet to a giant cloud server.
+
+
+
+Why master this? In defense or remote areas, you cannot rely on 5G or Wi-Fi. If a drone loses internet, its AI must still be able to "see" and make decisions locally.
+
+
+
+NVIDIA Jetson Architecture: A family of small, power-efficient computers designed by NVIDIA specifically for Edge-AI. They contain a regular CPU combined with an embedded GPU that excels at running neural network math.
+
+
+
+Hardware Constraints: Learning to balance Compute (FLOPs), Memory (RAM), and Power Consumption (Watts). An edge device might only have 5 to 15 Watts of power available—about the same as a smartphone lock screen.
+
+
+
+
+
+
+
+
+
+The Hardware Compiler: NVIDIA TensorRT
+
+TensorRT: NVIDIA's highly specialized optimization engine and runtime compiler for deep learning inference. It takes your universal ONNX file and redesigns it specifically for the exact NVIDIA GPU you are running on.
+
+
+
+Kernel Tuning / Autotuning: A GPU has thousands of tiny processing cores. TensorRT runs mini-tests on your specific graphics card to see which exact mathematical algorithms run fastest on your specific chip architecture, creating a custom execution plan.
+
+
+
+Layer and Tensor Fusion: Neural networks often have back-to-back layers (like a Convolution layer followed by a ReLU activation function). TensorRT fuses these separate steps into a single mathematical function execution, wiping out the time wasted moving data back and forth inside the GPU's memory cache.
+
+
+
+
+
+Production \& Deployment Concepts (The "Why")
+
+This is the core value proposition on your resume. This is what sets you apart from a student who only knows how to train models in a notebook.
+
+
+
+Serializing / Exporting: Saving an AI model's structural map and weights out of Python into a flat, raw file format (like .onnx or .engine) so a different language like C++ can run it directly on a chip.
+
+
+
+Hardware Precision Levels:
+
+
+
+FP32 (Single Precision): Decimals stored using 32 bits of memory. High accuracy, slow.
+
+
+
+FP16 (Half Precision): Decimals stored using 16 bits. Good balance.
+
+
+
+INT8 (8-bit Integer): Whole numbers stored using 8 bits. Tiny file size, blazing fast.
+
+
+
+Quantization: The mathematical process of mapping complex 32-bit decimals down to simple 8-bit integers without destroying the model's accuracy.
+
+
+
+
+
+
+
