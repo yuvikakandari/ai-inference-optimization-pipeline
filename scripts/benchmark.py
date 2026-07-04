@@ -1,25 +1,46 @@
-# benchmark.py
+# scripts/benchmark.py
 import os
+import sys
 import time
 import numpy as np
+
+# --- WINDOWS PATH PATCH FOR VENV CUDA ---
+# This looks for the deep nvidia directories inside your venv and maps them to Windows
+if sys.platform == "win32":
+    venv_base = sys.prefix
+    nvidia_base = os.path.join(venv_base, "Lib", "site-packages", "nvidia")
+    if os.path.exists(nvidia_base):
+        for root, dirs, files in os.walk(nvidia_base):
+            if "bin" in dirs or "lib" in dirs:
+                target_dir = os.path.join(root, "bin" if "bin" in dirs else "lib")
+                # Add to both Windows Environment PATH and Python DLL search spaces
+                os.environ["PATH"] = target_dir + os.pathsep + os.environ["PATH"]
+                try:
+                    os.add_dll_directory(target_dir)
+                except AttributeError:
+                    pass
+
+# Now we can safely import onnxruntime
 import onnxruntime as ort
 
 def benchmark_engine(model_path, name):
-    # Explicitly target your NVIDIA GPU via the CUDA Execution Provider
-    # Fall back to CPU only if configuration fails
+    # Prioritize official NVIDIA CUDA execution paths
     providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
     
     print(f"\nDeploying session for [{name}]...")
-    session = ort.InferenceSession(model_path, providers=providers)
+    try:
+        session = ort.InferenceSession(model_path, providers=providers)
+    except Exception as e:
+        print(f"   Initialization failed with provider layout. Falling back. Error: {e}")
+        session = ort.InferenceSession(model_path, providers=['CPUExecutionProvider'])
     
-    # Verify which hardware backend ONNX Runtime actually bound to
-    active_provider = session.get_providers()[0]
-    print(f"   Active Execution Backend: {session.get_provider_options().keys()}")
+    active_backend = session.get_providers()[0]
+    print(f"   Active Execution Backend: {active_backend}")
     
     input_name = session.get_inputs()[0].name
     input_data = np.random.randn(1, 3, 224, 224).astype(np.float32)
 
-    # Warm-up (10 runs) to spin up GPU clocks and initialize memory allocations
+    # Warm-up (10 runs)
     for _ in range(10):
         _ = session.run(None, {input_name: input_data})
 
